@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- main css file -->
+    <link rel="stylesheet" href="css/indexOne.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/normalize.css">
+   <!-- jquery filt  -->
+    <script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@200;300;400;800&display=swap" rel="stylesheet">
+   
+</head>
+<body>
+      <div id="parnt">
+        <!-- header -->
+        <div id="chlidernOne">
+            <p>مهامي </p>
+            <button class="circular" id="add-btm">
+               <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+
+        <div id="tasks" style="padding: 10px 20px;">
+          <div class="task" style=" transition: 0.3s ;padding: 5px ; display: flex; border-bottom:1px solid black ;">
+            <div style="width:70%; display: inline-block;">
+              <h3>قراءه كتاب </h3>
+              <span><i class="fa-regular fa-calendar-days"></i> 10 / 10 </span>
+            </div>
+            <div style="display: flex;justify-content: space-evenly; align-items: center; color: white; width: 30% ; ">
+              <button style="background-color: red; color: white" ><i class="fa-solid fa-trash-can" ></i> </button>
+              <button style="background-color: green; color: white"><i class="fa-solid fa-check"></i> </button>
+              <button style="background-color: blue; color: white" ><i class="fa-solid fa-pen"></i> </button>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+
+</body>
+
+<script>
+
+  let tasks = [
+    {
+      "title": "قراءه كتاب ",
+      "date":"2/15/2020",
+      "isDone": false,
+
+    },
+    {
+      "title": "انهاء المشروع  ",
+      "date":"7/15/2020",
+      "isDone": false,
+
+    },
+    {
+      "title": " انهاء كورس Js ",
+      "date":"5/15/2020",
+      "isDone": false,
+
+    },
+  ]
+
+
+  function fillTaskObj(){
+  document.getElementById("tasks").innerHTML =""
+  let index = 0;
+
+  for (a of tasks ){
+    let contant = `
+  <div class="task ${a.isDone ? "Done":""} " style=" transition: 0.3s ; padding: 5px ; display: flex; border-bottom:1px solid black ;">
+    <div style="width:70%; display: inline-block;">
+      <h3> ${a.title} </h3>
+        <span> <i class="fa-regular fa-calendar-days"></i> ${a.date}</span>
+    </div>
+    <div style="display: flex;justify-content: space-evenly; align-items: center; color: white; width: 30% ; ">
+        <button onclick="delet(${index})" style="background-color: red; color: white" ><i class="fa-solid fa-trash-can" ></i> </button>
+        
+        ${a.isDone ? `
+          <button onclick =" isComplete(${index})" style="background-color: red; color: white"> <i class="fa-solid fa-ban"></i> </button>
+          `:`<button onclick = "isComplete(${index}) " style="background-color: green; color: white"> <i class="fa-solid fa-check"></i> </button>`
+         }
+       
+        <button  onclick = "editTitle (${index})"style="background-color: blue; color: white" ><i class="fa-solid fa-pen"></i> </button>
+    </div>
+
+  </div>`
+
+  document.getElementById("tasks").innerHTML += contant
+  index++
+  }
+}
+
+  function getTasksFromStorage(){
+    let retrivedTasks = JSON.parse( localStorage.getItem("tasks"))
+    tasks = retrivedTasks ?? []
+  }
+
+
+  getTasksFromStorage()
+  fillTaskObj()
+
+  document.getElementById("add-btm").addEventListener("click",function(){
+  let taskname = prompt("الرجاء ادخال عنوان المهمه");
+  let now = new Date()
+  let nowDate = now.getDate() +"/"+ (now.getMonth()+1) + "/" + now.getFullYear()
+ 
+  let taskObj = {
+    "title": taskname,
+      "date":nowDate ,
+      "isDone": false,
+      }
+    tasks.push(taskObj)
+
+    storgTasks()
+    fillTaskObj()
+
+  })
+  
+  function delet (indx){
+    let taskz = tasks[indx]
+    let confoem = confirm(`${taskz.title}هل انت متاكد من حذف مهمه `)
+    if(confoem){
+      tasks.splice(indx,1)
+      storgTasks()
+      fillTaskObj()
+
+    }
+  }
+
+  function editTitle (index){
+    let task = tasks[index]
+    let edit = prompt("الرجاء ادخال اسم المهمه الجديد", task.title)
+    task.title = edit
+    storgTasks()
+    fillTaskObj()
+  }
+
+  function isComplete(index){
+    let task = tasks[index]
+   
+    task.isDone = !task.isDone
+    storgTasks()
+    fillTaskObj()
+  }
+
+
+// storg functhion 
+ function storgTasks(){
+  
+  let tasksString = JSON.stringify(tasks)
+    localStorage.setItem("tasks",tasksString)
+ }
+
+
+
+
+
+
+
+</script>
+
+</html>
